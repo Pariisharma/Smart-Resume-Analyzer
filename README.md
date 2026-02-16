@@ -6,7 +6,8 @@ An AI-Powered Smart Resume Analyzer built using Flask and PDF Processing.
 
 ## 📌 Project Overview
 
-![Smart Resume Analyzer UI](screenshot.png)
+![Smart Resume Analyzer UI](Screenshot.png)
+
 
 ---
 
