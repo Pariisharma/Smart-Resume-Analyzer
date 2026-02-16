@@ -6,12 +6,17 @@ An AI-Powered Smart Resume Analyzer built using Flask and PDF Processing.
 
 ## 📌 Project Overview
 
+![Smart Resume Analyzer UI](screenshot.png)
+
+---
+
 Smart Resume Analyzer allows users to upload their resume (PDF format) and:
 
 - Extract resume text
 - Analyze resume content
 - Improve resume professionally using AI (Upcoming)
 - Match resume with job descriptions (Upcoming)
+
 
 ---
 
@@ -40,16 +45,30 @@ Smart-Resume-Analyzer/
 
 ## ⚙️ How to Run This Project
 
-1. Clone the repository:
+1️⃣ Clone the repository:
 
-2. Navigate into the project:
+2️⃣ Navigate into the project:
+
+3️⃣ Create virtual environment:
+
+4️⃣ Activate virtual environment (Windows):
+
+5️⃣ Install dependencies:
+
+6️⃣ Run the application:
+
+7️⃣ Open in browser:
 
 
-3. Create virtual environment:
 
 
 
-4. Activate virtual environment:
 
-Windows:
+
+
+
+
+
+
+
 
