@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request
 import PyPDF2
+from skills import skills_list
+
 
 app = Flask(__name__)
 
@@ -18,7 +20,16 @@ def upload():
     for page in pdf_reader.pages:
         text += page.extract_text()
 
-    return text
+    text_lower = text.lower()
+
+    found_skills = []
+
+    for skill in skills_list:
+        if skill in text_lower:
+            found_skills.append(skill)
+
+    return render_template("result.html", resume_text=text, skills=found_skills)
+
 
 
 
