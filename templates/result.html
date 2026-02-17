@@ -38,6 +38,31 @@
         <div class="border rounded p-3 bg-white" style="max-height: 300px; overflow-y: auto;">
             {{ resume_text }}
         </div>
+        <hr>
+        <h4 class="mt-4">Job Match Results:</h4>
+
+{% for job in jobs %}
+    <div class="card mt-3 p-3 shadow-sm">
+        <h5 class="text-primary">{{ job.job }}</h5>
+
+        <p><strong>Match Percentage:</strong> {{ job.match }}%</p>
+
+        <div class="progress mb-3" style="height:20px;">
+            <div class="progress-bar {% if job.match >= 70 %}bg-success{% elif job.match >= 40 %}bg-warning{% else %}bg-danger{% endif %}"
+                 role="progressbar"
+                 style="width: {{ job.match }}%"
+                 aria-valuenow="{{ job.match }}"
+                 aria-valuemin="0"
+                 aria-valuemax="100">
+                 {{ job.match }}%
+            </div>
+        </div>
+
+        <p><strong>Matched Skills:</strong> {{ job.matched_skills }}</p>
+        <p><strong>Missing Skills:</strong> {{ job.missing_skills }}</p>
+    </div>
+{% endfor %}
+
 
         <div class="text-center mt-4">
             <a href="/" class="btn btn-primary">
