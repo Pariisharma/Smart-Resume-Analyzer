@@ -18,8 +18,34 @@
             Resume Analysis Result
         </h2>
 
+        <!-- Overall Resume Score -->
+        <h4 class="mt-4">Overall Resume Score:</h4>
+
+        <div class="progress mb-4" style="height: 25px;">
+            <div 
+                class="progress-bar {% if overall_score >= 70 %}bg-success{% elif overall_score >= 40 %}bg-warning{% else %}bg-danger{% endif %}"
+                role="progressbar"
+                style="width: {{ overall_score }}%"
+                aria-valuenow="{{ overall_score }}"
+                aria-valuemin="0"
+                aria-valuemax="100">
+                {{ overall_score }}%
+            </div>
+        </div>
+
+        <!-- Recommended Job Section -->
+        {% if recommended_job %}
+        <div class="alert alert-info text-center mt-4 shadow-sm">
+            <h4 class="mb-2">🎯 Top Recommended Job</h4>
+            <h5 class="text-primary">{{ recommended_job.job }}</h5>
+            <p class="mb-0">
+                Match Score: <strong>{{ recommended_job.match }}%</strong>
+            </p>
+        </div>
+        {% endif %}
+
         <!-- Extracted Skills Section -->
-        <h4 class="mb-3">Extracted Skills:</h4>
+        <h4 class="mt-4">Extracted Skills:</h4>
 
         {% if skills %}
             <div class="mb-4">
@@ -38,31 +64,42 @@
         <div class="border rounded p-3 bg-white" style="max-height: 300px; overflow-y: auto;">
             {{ resume_text }}
         </div>
+
         <hr>
+
+        <hr>
+
+    <h4 class="mt-4 text-info">AI Resume Feedback:</h4>
+
+    <div class="card mt-3 p-3 shadow-sm bg-light">
+    <pre style="white-space: pre-wrap;">{{ ai_feedback }}</pre>
+    </div>
+
+
+        <!-- Job Match Results -->
         <h4 class="mt-4">Job Match Results:</h4>
 
-{% for job in jobs %}
-    <div class="card mt-3 p-3 shadow-sm">
-        <h5 class="text-primary">{{ job.job }}</h5>
+        {% for job in jobs %}
+            <div class="card mt-3 p-3 shadow-sm">
+                <h5 class="text-primary">{{ job.job }}</h5>
 
-        <p><strong>Match Percentage:</strong> {{ job.match }}%</p>
+                <p><strong>Match Percentage:</strong> {{ job.match }}%</p>
 
-        <div class="progress mb-3" style="height:20px;">
-            <div class="progress-bar {% if job.match >= 70 %}bg-success{% elif job.match >= 40 %}bg-warning{% else %}bg-danger{% endif %}"
-                 role="progressbar"
-                 style="width: {{ job.match }}%"
-                 aria-valuenow="{{ job.match }}"
-                 aria-valuemin="0"
-                 aria-valuemax="100">
-                 {{ job.match }}%
+                <div class="progress mb-3" style="height:20px;">
+                    <div class="progress-bar {% if job.match >= 70 %}bg-success{% elif job.match >= 40 %}bg-warning{% else %}bg-danger{% endif %}"
+                         role="progressbar"
+                         style="width: {{ job.match }}%"
+                         aria-valuenow="{{ job.match }}"
+                         aria-valuemin="0"
+                         aria-valuemax="100">
+                         {{ job.match }}%
+                    </div>
+                </div>
+
+                <p><strong>Matched Skills:</strong> {{ job.matched_skills }}</p>
+                <p><strong>Missing Skills:</strong> {{ job.missing_skills }}</p>
             </div>
-        </div>
-
-        <p><strong>Matched Skills:</strong> {{ job.matched_skills }}</p>
-        <p><strong>Missing Skills:</strong> {{ job.missing_skills }}</p>
-    </div>
-{% endfor %}
-
+        {% endfor %}
 
         <div class="text-center mt-4">
             <a href="/" class="btn btn-primary">
