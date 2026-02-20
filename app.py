@@ -36,6 +36,9 @@ def upload():
             text += page_text
 
     text_lower = text.lower()
+    # Limit text size to avoid quota exhaustion
+    if len(text) > 3000:
+        text = text[:3000]
 
     prompt = f"""
     You are a professional career advisor.
@@ -53,11 +56,15 @@ def upload():
 
     try:
         response = client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=prompt
+            model="gemini-2.0-flash-lite",
+            contents=prompt,
+            config={
+                "max_output_tokens": 150,
+                "temperature": 0.5
+            }
         )
 
-        ai_feedback = response.text
+        ai_feedback = response.text if hasattr(response, "text") else "AI feedback unavailable."
 
     except Exception as e:
         print("Gemini Error:", e)
