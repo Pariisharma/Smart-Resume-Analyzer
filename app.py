@@ -8,7 +8,7 @@ from jobs_data import jobs
 
 # 1. Setup Client
 # Reminder: Regenerate this key in AI Studio as it's been exposed!
-client = genai.Client(api_key="AIzaSyDYfvCKjJjc3W4WNrbNyDiBfE3rfClxZsM")
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 app = Flask(__name__)
 
@@ -56,7 +56,7 @@ def upload():
     
     try:
         response = client.models.generate_content(
-            model="models/gemini-2.5-flash",  # Add 'models/' prefix
+            model="models/gemini-2.5-flash",  
             contents=prompt,
             
         )
@@ -99,5 +99,8 @@ def upload():
         ai_feedback=ai_feedback
     )
 
+import os
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
