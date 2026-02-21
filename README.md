@@ -1,75 +1,30 @@
-# 🚀 Smart Resume Analyzer
+# Smart Resume Analyzer (AI Powered)
 
-An AI-Powered Smart Resume Analyzer built using Flask and PDF Processing.
+A Flask-based web application that:
+- Extracts text from resumes (PDF)
+- Analyzes skills
+- Matches with job roles
+- Provides AI-powered feedback using Google Gemini
 
----
-
-## 📌 Project Overview
-
-![Smart Resume Analyzer UI](Screenshot.png)
-
-
----
-
-Smart Resume Analyzer allows users to upload their resume (PDF format) and:
-
-- Extract resume text
-- Analyze resume content
-- Improve resume professionally using AI (Upcoming)
-- Match resume with job descriptions (Upcoming)
-
-
----
-
-## 🛠️ Tech Stack
-
+## Tech Stack
 - Python
 - Flask
-- HTML
-- Bootstrap
 - PyPDF2
-- Git & GitHub
+- Google Gemini API
+- HTML/CSS
 
----
+## Features
+- Resume Score
+- Job Matching System
+- AI Career Feedback
+- Skill Extraction
 
-## 📂 Project Structure
+## How to Run
 
-Smart-Resume-Analyzer/
-│
-├── app.py
-├── templates/
-│   └── index.html
-├── venv/
-└── README.md
-
----
-
-## ⚙️ How to Run This Project
-
-1️⃣ Clone the repository:
-
-2️⃣ Navigate into the project:
-
-3️⃣ Create virtual environment:
-
-4️⃣ Activate virtual environment (Windows):
-
-5️⃣ Install dependencies:
-
-6️⃣ Run the application:
-
-7️⃣ Open in browser:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+1. Clone repository
+2. Create virtual environment
+3. Install requirements:
+   pip install -r requirements.txt
+4. Set GEMINI_API_KEY
+5. Run:
+   python app.py
