@@ -40,6 +40,22 @@
                 </div>
             </div>
 
+            <div class="text-center mt-3">
+                {% if overall_score >= 70 %}
+                <span class="badge bg-success fs-5 px-4 py-2">
+                    🟢 Strong Candidate
+                </span>
+                {% elif overall_score >= 40 %}
+                <span class="badge bg-warning text-dark fs-5 px-4 py-2">
+                    🟡 Moderate
+                </span>
+                {% else %}
+                <span class="badge bg-danger fs-5 px-4 py-2">
+                    🔴 Needs Improvement
+                </span>
+                {% endif %}
+            </div>
+
             <!-- Recommended Job Section -->
             {% if recommended_job %}
             <div class="alert alert-info text-center mt-4 shadow-sm">
