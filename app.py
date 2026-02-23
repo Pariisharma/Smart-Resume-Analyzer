@@ -44,20 +44,38 @@ def upload():
 
     # 3. AI Analysis
     prompt = f"""
-    You are a professional career advisor. Analyze this resume:
-    1. Strengths
-    2. Weaknesses
-    3. Suggestions
-    4. Recommended career path
+    Analyze the following resume.
+
+    IMPORTANT:
+    Respond ONLY in this exact format.
+    Do not add extra explanations.
+
+    STRENGTHS:
+    - Short bullet point
+    - Short bullet point
+
+    WEAKNESSES:
+    - Short bullet point
+    - Short bullet point
+
+    IMPROVEMENTS:
+    - Short bullet point
+    - Short bullet point
+
+    Keep points clear, concise, and professional.
 
     Resume:
     {truncated_text}
     """
     
+    
     try:
         response = client.models.generate_content(
             model="models/gemini-2.5-flash",  
             contents=prompt,
+            config={
+                "temperature": 0.4
+            }
             
         )
         ai_feedback = response.text

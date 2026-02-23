@@ -77,8 +77,44 @@
             <!-- AI Resume Feedback -->
             <h4 class="mt-4 text-info">AI Resume Feedback:</h4>
 
-            <div class="card mt-3 p-3 shadow-sm bg-light">
-                <pre style="white-space: pre-wrap;">{{ ai_feedback }}</pre>
+            <div class="card mt-3 p-4 shadow-sm border-0" style="background-color: #f8f9fa; border-radius: 15px;">
+
+                {% set lines = ai_feedback.split('\n') %}
+
+                {% set bullet_open = false %}
+
+                {% for line in lines %}
+
+                {% if "STRENGTHS" in line %}
+                {% if bullet_open %}</ul>{% set bullet_open = false %}{% endif %}
+                <h5 class="text-success mt-3">💪 Resume Strengths</h5>
+
+                {% elif "WEAKNESSES" in line %}
+                {% if bullet_open %}</ul>{% set bullet_open = false %}{% endif %}
+                <h5 class="text-danger mt-4">⚠️ Areas to Improve</h5>
+
+                {% elif "IMPROVEMENTS" in line %}
+                {% if bullet_open %}</ul>{% set bullet_open = false %}{% endif %}
+                <h5 class="text-primary mt-4">🚀 Recommendations</h5>
+
+                {% elif line.startswith('-') %}
+                {% if not bullet_open %}
+                <ul class="mt-2">
+                    {% set bullet_open = true %}
+                    {% endif %}
+                    <li>{{ line[1:] }}</li>
+
+                    {% else %}
+                    {% if bullet_open %}
+                </ul>{% set bullet_open = false %}{% endif %}
+                <p>{{ line }}</p>
+
+                {% endif %}
+
+                {% endfor %}
+
+                {% if bullet_open %}</ul>{% endif %}
+
             </div>
 
             <!-- Job Match Results -->
@@ -117,8 +153,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
 
-            let score = {{ overall_score | default (0)
-        }};
+            let score = {{ overall_score | default(0) }};
         let circle = document.getElementById("progressCircle");
         let scoreText = document.getElementById("scoreText");
 
