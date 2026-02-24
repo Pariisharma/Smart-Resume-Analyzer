@@ -26,9 +26,9 @@
             backdrop-filter: blur(18px);
             border: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 15px 45px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
         }
 
-        /* Fade Animation */
         .fade-in {
             opacity: 0;
             transform: translateY(25px);
@@ -40,7 +40,6 @@
             transform: translateY(0);
         }
 
-        /* Premium Job Card */
         .job-card {
             border-radius: 25px;
             background: rgba(255, 255, 255, 0.75);
@@ -90,21 +89,20 @@
             color: #60a5fa !important;
         }
 
-        .dark-mode .badge.bg-light {
-            background-color: #334155 !important;
-            color: #f1f5f9 !important;
-        }
-
-        .dark-mode .card {
-            color: #f1f5f9;
-        }
-
         .dark-mode .feedback-card {
             background: rgba(30, 41, 59, 0.75) !important;
             color: #f1f5f9;
         }
 
-        /* Match Score Badge - Light Mode */
+        .dark-mode .btn-outline-dark {
+            border-color: #cbd5e1;
+            color: #f1f5f9;
+        }
+
+        .dark-mode .btn-outline-dark:hover {
+            background-color: #334155;
+        }
+
         .match-badge {
             background: linear-gradient(135deg, #2563eb, #3b82f6);
             color: #ffffff;
@@ -112,248 +110,279 @@
             border-radius: 30px;
         }
 
-        /* Match Score Badge - Dark Mode */
         .dark-mode .match-badge {
             background: linear-gradient(135deg, #3b82f6, #60a5fa);
-            color: #ffffff;
         }
 
+        ::selection {
+            background: #2563eb;
+            color: white;
+        }
+
+        h2,
+        h5,
+        h6 {
+            user-select: none;
+        }
+
+        .dark-mode h2,
+        .dark-mode h3,
+        .dark-mode h4,
+        .dark-mode h5,
+        .dark-mode h6 {
+            color: #f1f5f9 !important;
+        }
+
+        .dark-mode .section-title {
+            color: #f1f5f9 !important;
+        }
+
+        .divider-line {
+            width: 80px;
+            margin: 15px auto;
+            border-top: 3px solid #22c55e;
+        }
+
+        .dark-mode .divider-line {
+            border-top: 3px solid #60a5fa;
+        }
     </style>
 </head>
 
-<body>
+<!-- DARK MODE ENABLED BY DEFAULT -->
 
-<div class="container py-5">
-<div class="card glass-card p-5">
+<body class="dark-mode">
 
-<!-- HEADER -->
-<div class="text-center mb-5 fade-in">
-    <h2 class="fw-bold" style="font-size: 36px;">
-        Resume Analysis Report
-    </h2>
+    <div class="container py-5">
+        <div class="card glass-card p-5">
 
-    <p class="text-muted">
-        AI-powered Resume Evaluation & Job Matching Summary
-    </p>
+            <!-- HEADER -->
+            <div class="text-center mb-5 fade-in">
+                <h2 class="fw-bold" style="font-size: 36px;">
+                    Resume Analysis Report
+                </h2>
 
-    <hr style="width: 80px; margin: 15px auto; border-top: 3px solid #198754;">
+                <p class="text-muted">
+                    AI-powered Resume Evaluation & Job Matching Summary
+                </p>
 
-    <button id="darkToggle" class="btn btn-outline-dark premium-btn mt-2">
-        🌙 Toggle Dark Mode
-    </button>
-</div>
+                <hr class="divider-line">
 
-<!-- SCORE + TOP JOB -->
-<div class="row align-items-center mt-4 fade-in">
-
-    <!-- SCORE -->
-    <div class="col-md-6 text-center">
-        <h5 class="mb-3 fw-semibold">Overall Resume Score</h5>
-
-        <div class="d-flex justify-content-center my-3">
-            <div class="position-relative" style="width: 200px; height: 200px;">
-
-                <svg width="200" height="200">
-                    <circle cx="100" cy="100" r="80"
-                        stroke="#e6e6e6"
-                        stroke-width="15"
-                        fill="none" />
-
-                    <circle id="progressCircle"
-                        cx="100"
-                        cy="100"
-                        r="80"
-                        stroke="#22c55e"
-                        stroke-width="15"
-                        fill="none"
-                        stroke-dasharray="502"
-                        stroke-dashoffset="502"
-                        stroke-linecap="round"
-                        transform="rotate(-90 100 100)" />
-                </svg>
-
-                <div class="position-absolute top-50 start-50 translate-middle">
-                    <h2 id="scoreText" class="fw-bold">0%</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="mt-3">
-            {% if overall_score >= 70 %}
-                <span class="badge bg-success fs-6 px-4 py-2">🟢 Strong Candidate</span>
-            {% elif overall_score >= 40 %}
-                <span class="badge bg-warning text-dark fs-6 px-4 py-2">🟡 Moderate</span>
-            {% else %}
-                <span class="badge bg-danger fs-6 px-4 py-2">🔴 Needs Improvement</span>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- TOP RECOMMENDED -->
-    <div class="col-md-6">
-        {% if recommended_job %}
-        <div class="card job-card border-0 p-4 text-center">
-
-            <div style="font-size: 45px;">🏆</div>
-
-            <h6 class="text-uppercase text-muted mt-2">
-                Top Recommended Role
-            </h6>
-
-            <h3 class="fw-bold text-primary mt-2">
-                {{ recommended_job.job }}
-            </h3>
-
-            <div class="mt-3">
-                <span class="badge match-badge px-4 py-2 fs-6">
-                    Match Score: {{ recommended_job.match }}%
-                </span>
+                <button id="darkToggle" class="btn btn-outline-dark premium-btn mt-2">
+                    ☀️ Switch to Light Mode
+                </button>
             </div>
 
-        </div>
-        {% endif %}
-    </div>
 
-</div>
+            <!-- SCORE + TOP JOB -->
+            <div class="row align-items-center mt-4 fade-in">
 
-<!-- ALL JOB MATCH GRID -->
-<div class="fade-in mt-5">
-    <h5 class="section-title">All Job Match Results</h5>
+                <!-- SCORE -->
+                <div class="col-md-6 text-center">
+                    <h5 class="mb-3 fw-semibold">Overall Resume Score</h5>
 
-    <div class="row">
-        {% for job in jobs %}
-        <div class="col-md-4 mb-4">
-            <div class="card job-card border-0 p-4 text-center">
+                    <div class="d-flex justify-content-center my-3">
+                        <div class="position-relative" style="width: 200px; height: 200px;">
 
-                <h6 class="text-muted text-uppercase mb-2" style="font-size: 13px;">
-                    Job Role
-                </h6>
+                            <svg width="200" height="200">
+                                <circle cx="100" cy="100" r="80" stroke="#e6e6e6" stroke-width="15" fill="none" />
 
-                <h4 class="fw-bold text-primary mb-3">
-                    {{ job.job }}
-                </h4>
+                                <circle id="progressCircle" cx="100" cy="100" r="80" stroke="#22c55e" stroke-width="15"
+                                    fill="none" stroke-dasharray="502" stroke-dashoffset="502" stroke-linecap="round"
+                                    transform="rotate(-90 100 100)" />
+                            </svg>
 
-                {% if job.match >= 70 %}
-                    <span class="badge bg-success fs-6 px-4 py-2 mb-3">
-                        {{ job.match }}% Match
-                    </span>
-                {% elif job.match >= 40 %}
-                    <span class="badge bg-warning text-dark fs-6 px-4 py-2 mb-3">
-                        {{ job.match }}% Match
-                    </span>
-                {% else %}
-                    <span class="badge bg-danger fs-6 px-4 py-2 mb-3">
-                        {{ job.match }}% Match
-                    </span>
-                {% endif %}
+                            <div class="position-absolute top-50 start-50 translate-middle">
+                                <h2 id="scoreText" class="fw-bold">0%</h2>
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="small text-muted mt-2">
-                    <strong>Matched:</strong> {{ job.matched_skills }}
+                    <div class="mt-3">
+                        {% if overall_score >= 70 %}
+                        <span class="badge bg-success fs-6 px-4 py-2">🟢 Strong Candidate</span>
+                        {% elif overall_score >= 40 %}
+                        <span class="badge bg-warning text-dark fs-6 px-4 py-2">🟡 Moderate</span>
+                        {% else %}
+                        <span class="badge bg-danger fs-6 px-4 py-2">🔴 Needs Improvement</span>
+                        {% endif %}
+                    </div>
                 </div>
 
-                <div class="small text-danger mt-1">
-                    <strong>Missing:</strong> {{ job.missing_skills }}
+                <!-- TOP RECOMMENDED -->
+                <div class="col-md-6">
+                    {% if recommended_job %}
+                    <div class="card job-card border-0 p-4 text-center">
+
+                        <div style="font-size: 45px;">🏆</div>
+
+                        <h6 class="text-uppercase text-muted mt-2">
+                            Top Recommended Role
+                        </h6>
+
+                        <h3 class="fw-bold text-primary mt-2">
+                            {{ recommended_job.job }}
+                        </h3>
+
+                        <div class="mt-3">
+                            <span class="badge match-badge px-4 py-2 fs-6">
+                                Match Score: {{ recommended_job.match }}%
+                            </span>
+                        </div>
+
+                    </div>
+                    {% endif %}
                 </div>
 
             </div>
+
+            <!-- ALL JOB MATCH GRID -->
+            <div class="fade-in mt-5">
+                <h5 class="section-title">All Job Match Results</h5>
+
+                <div class="row">
+                    {% for job in jobs %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card job-card border-0 p-4 text-center">
+
+                            <h6 class="text-muted text-uppercase mb-2" style="font-size: 13px;">
+                                Job Role
+                            </h6>
+
+                            <h4 class="fw-bold text-primary mb-3">
+                                {{ job.job }}
+                            </h4>
+
+                            {% if job.match >= 70 %}
+                            <span class="badge bg-success fs-6 px-4 py-2 mb-3">
+                                {{ job.match }}% Match
+                            </span>
+                            {% elif job.match >= 40 %}
+                            <span class="badge bg-warning text-dark fs-6 px-4 py-2 mb-3">
+                                {{ job.match }}% Match
+                            </span>
+                            {% else %}
+                            <span class="badge bg-danger fs-6 px-4 py-2 mb-3">
+                                {{ job.match }}% Match
+                            </span>
+                            {% endif %}
+
+                            <div class="small text-muted mt-2">
+                                <strong>Matched:</strong> {{ job.matched_skills }}
+                            </div>
+
+                            <div class="small text-danger mt-1">
+                                <strong>Missing:</strong> {{ job.missing_skills }}
+                            </div>
+
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- AI FEEDBACK -->
+            <div class="fade-in mt-5">
+                <h5 class="section-title text-info">AI Resume Feedback</h5>
+
+                <div class="card feedback-card mt-3 p-4 border-0 shadow-sm" style="border-radius: 20px;">
+
+                    {% set lines = ai_feedback.split('\n') %}
+                    {% set bullet_open = false %}
+
+                    {% for line in lines %}
+                    {% if "STRENGTHS" in line %}
+                    {% if bullet_open %}</ul>{% set bullet_open = false %}{% endif %}
+                    <h6 class="text-success mt-3">💪 Resume Strengths</h6>
+
+                    {% elif "WEAKNESSES" in line %}
+                    {% if bullet_open %}</ul>{% set bullet_open = false %}{% endif %}
+                    <h6 class="text-danger mt-3">⚠️ Areas to Improve</h6>
+
+                    {% elif "IMPROVEMENTS" in line %}
+                    {% if bullet_open %}</ul>{% set bullet_open = false %}{% endif %}
+                    <h6 class="text-primary mt-3">🚀 Recommendations</h6>
+
+                    {% elif line.startswith('-') %}
+                    {% if not bullet_open %}
+                    <ul class="mt-2">
+                        {% set bullet_open = true %}
+                        {% endif %}
+                        <li>{{ line[1:] }}</li>
+
+                        {% else %}
+                        {% if bullet_open %}
+                    </ul>{% set bullet_open = false %}{% endif %}
+                    <p>{{ line }}</p>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if bullet_open %}</ul>{% endif %}
+                </div>
+            </div>
+
+            <!-- BUTTON -->
+            <div class="text-center mt-5 fade-in">
+                <a href="/" class="btn btn-primary premium-btn">
+                    Upload Another Resume
+                </a>
+            </div>
+
         </div>
-        {% endfor %}
     </div>
-</div>
 
-<!-- AI FEEDBACK -->
-<div class="fade-in mt-5">
-<h5 class="section-title text-info">AI Resume Feedback</h5>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
 
-<div class="card feedback-card mt-3 p-4 border-0 shadow-sm"
-     style="background-color: rgba(255,255,255,0.85); border-radius: 20px;">
+            let elements = document.querySelectorAll(".fade-in");
+            elements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.classList.add("show");
+                }, index * 200);
+            });
 
-    {% set lines = ai_feedback.split('\n') %}
-    {% set bullet_open = false %}
+            let score = {{ overall_score | default(0)}};
+        let circle = document.getElementById("progressCircle");
+        let scoreText = document.getElementById("scoreText");
 
-    {% for line in lines %}
-        {% if "STRENGTHS" in line %}
-            {% if bullet_open %}</ul>{% set bullet_open = false %}{% endif %}
-            <h6 class="text-success mt-3">💪 Resume Strengths</h6>
+        let radius = 80;
+        let circumference = 2 * Math.PI * radius;
 
-        {% elif "WEAKNESSES" in line %}
-            {% if bullet_open %}</ul>{% set bullet_open = false %}{% endif %}
-            <h6 class="text-danger mt-3">⚠️ Areas to Improve</h6>
+        circle.style.strokeDasharray = circumference;
+        circle.style.strokeDashoffset = circumference;
 
-        {% elif "IMPROVEMENTS" in line %}
-            {% if bullet_open %}</ul>{% set bullet_open = false %}{% endif %}
-            <h6 class="text-primary mt-3">🚀 Recommendations</h6>
+        let current = 0;
 
-        {% elif line.startswith('-') %}
-            {% if not bullet_open %}
-                <ul class="mt-2">
-                {% set bullet_open = true %}
-            {% endif %}
-            <li>{{ line[1:] }}</li>
+        let interval = setInterval(function () {
+            if (current >= score) {
+                clearInterval(interval);
+            } else {
+                current++;
+                let offset = circumference - (current / 100) * circumference;
+                circle.style.strokeDashoffset = offset;
+                scoreText.innerHTML = current + "%";
 
-        {% else %}
-            {% if bullet_open %}</ul>{% set bullet_open = false %}{% endif %}
-            <p>{{ line }}</p>
-        {% endif %}
-    {% endfor %}
+                if (current >= 70) circle.style.stroke = "#22c55e";
+                else if (current >= 40) circle.style.stroke = "#facc15";
+                else circle.style.stroke = "#ef4444";
+            }
+        }, 15);
 
-    {% if bullet_open %}</ul>{% endif %}
-</div>
-</div>
+        const toggleBtn = document.getElementById("darkToggle");
 
-<!-- BUTTON -->
-<div class="text-center mt-5 fade-in">
-    <a href="/" class="btn btn-primary premium-btn">
-        Upload Another Resume
-    </a>
-</div>
+        toggleBtn.addEventListener("click", function () {
+            document.body.classList.toggle("dark-mode");
 
-</div>
-</div>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
-    let elements = document.querySelectorAll(".fade-in");
-    elements.forEach((el, index) => {
-        setTimeout(() => {
-            el.classList.add("show");
-        }, index * 200);
-    });
-
-    let score = {{ overall_score | default(0) }};
-    let circle = document.getElementById("progressCircle");
-    let scoreText = document.getElementById("scoreText");
-
-    let radius = 80;
-    let circumference = 2 * Math.PI * radius;
-
-    circle.style.strokeDasharray = circumference;
-    circle.style.strokeDashoffset = circumference;
-
-    let current = 0;
-
-    let interval = setInterval(function () {
-        if (current >= score) {
-            clearInterval(interval);
-        } else {
-            current++;
-            let offset = circumference - (current / 100) * circumference;
-            circle.style.strokeDashoffset = offset;
-            scoreText.innerHTML = current + "%";
-
-            if (current >= 70) circle.style.stroke = "#22c55e";
-            else if (current >= 40) circle.style.stroke = "#facc15";
-            else circle.style.stroke = "#ef4444";
-        }
-    }, 15);
-
-    document.getElementById("darkToggle").addEventListener("click", function () {
-        document.body.classList.toggle("dark-mode");
-    });
+            if (document.body.classList.contains("dark-mode")) {
+                toggleBtn.innerHTML = "☀️ Switch to Light Mode";
+            } else {
+                toggleBtn.innerHTML = "🌙 Switch to Dark Mode";
+            }
+        });
 
 });
-</script>
+    </script>
 
 </body>
+
 </html>

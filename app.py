@@ -49,9 +49,10 @@ client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 users = {}
 
 class User(UserMixin):
-    def __init__(self, id, username, password=None):
+    def __init__(self, id, username, name=None, password=None):
         self.id = id
         self.username = username
+        self.name = name
         self.password = password
 
 @login_manager.user_loader
@@ -115,36 +116,42 @@ def google_login():
 def auth_callback():
     token = google.authorize_access_token()
 
-    # THIS IS THE FIX 🔥
     user_info = token.get("userinfo")
 
     if not user_info:
         user_info = google.get("userinfo").json()
 
     email = user_info["email"]
+    full_name = user_info.get("name", "")
 
-    # Check if user exists
+    # Extract first name
+    first_name = full_name.split(" ")[0] if full_name else "User"
+
     existing_user = None
     for user in users.values():
         if user.username == email:
             existing_user = user
 
-    # Auto-create if not exists
     if not existing_user:
-        user = User(id=str(len(users)+1), username=email)
+        user = User(
+            id=str(len(users)+1),
+            username=email,
+            name=first_name
+        )
         users[user.id] = user
         existing_user = user
 
     login_user(existing_user)
 
     return redirect(url_for("home"))
+   
 
 # ================= MAIN ROUTES =================
 
 @app.route("/")
 @login_required
 def home():
-    return render_template("index.html")
+    return render_template("index.html", username=current_user.name)
 
 
 @app.route("/upload", methods=["POST"])
