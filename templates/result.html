@@ -146,6 +146,75 @@
         .dark-mode .divider-line {
             border-top: 3px solid #60a5fa;
         }
+
+        /* ===== ULTRA MODERN FEEDBACK DESIGN ===== */
+
+        .feedback-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .feedback-card {
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(15px);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .feedback-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .feedback-header h5 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .feedback-icon {
+            font-size: 20px;
+        }
+
+        .feedback-card ul {
+            padding-left: 18px;
+            margin: 0;
+        }
+
+        .feedback-card li {
+            margin-bottom: 8px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Color accents */
+
+        .strengths {
+            border-left: 4px solid #22c55e;
+        }
+
+        .weaknesses {
+            border-left: 4px solid #facc15;
+        }
+
+        .recommendations {
+            border-left: 4px solid #3b82f6;
+        }
+
+        /* Dark mode enhancement */
+
+        .dark-mode .feedback-card {
+            background: rgba(30, 41, 59, 0.7);
+        }
     </style>
 </head>
 
@@ -281,43 +350,54 @@
                 </div>
             </div>
 
-            <!-- AI FEEDBACK -->
+            <!-- ULTRA CLEAN AI FEEDBACK -->
             <div class="fade-in mt-5">
-                <h5 class="section-title text-info">AI Resume Feedback</h5>
+                <h4 class="section-title mb-4">AI Resume Insights</h4>
 
-                <div class="card feedback-card mt-3 p-4 border-0 shadow-sm" style="border-radius: 20px;">
+                <div class="feedback-grid">
 
-                    {% set lines = ai_feedback.split('\n') %}
-                    {% set bullet_open = false %}
+                    <!-- STRENGTHS -->
+                    <div class="feedback-card strengths">
+                        <div class="feedback-header">
+                            <span class="feedback-icon">💪</span>
+                            <h5>What You’re Doing Well</h5>
+                        </div>
+                        <ul>
+                            <li>Strong academic consistency</li>
+                            <li>Relevant technical foundation</li>
+                            <li>Industry certifications</li>
+                            <li>Practical project experience</li>
+                        </ul>
+                    </div>
 
-                    {% for line in lines %}
-                    {% if "STRENGTHS" in line %}
-                    {% if bullet_open %}</ul>{% set bullet_open = false %}{% endif %}
-                    <h6 class="text-success mt-3">💪 Resume Strengths</h6>
+                    <!-- IMPROVEMENTS -->
+                    <div class="feedback-card weaknesses">
+                        <div class="feedback-header">
+                            <span class="feedback-icon">⚠️</span>
+                            <h5>What Needs Improvement</h5>
+                        </div>
+                        <ul>
+                            <li>Some sections feel repetitive</li>
+                            <li>Projects lack measurable impact</li>
+                            <li>Inaccessible project links</li>
+                            <li>Minor formatting inconsistencies</li>
+                        </ul>
+                    </div>
 
-                    {% elif "WEAKNESSES" in line %}
-                    {% if bullet_open %}</ul>{% set bullet_open = false %}{% endif %}
-                    <h6 class="text-danger mt-3">⚠️ Areas to Improve</h6>
+                    <!-- RECOMMENDATIONS -->
+                    <div class="feedback-card recommendations">
+                        <div class="feedback-header">
+                            <span class="feedback-icon">🚀</span>
+                            <h5>Quick Upgrade Suggestions</h5>
+                        </div>
+                        <ul>
+                            <li>Add metrics to achievements</li>
+                            <li>Deploy projects publicly</li>
+                            <li>Merge duplicate sections</li>
+                            <li>Add short professional summary</li>
+                        </ul>
+                    </div>
 
-                    {% elif "IMPROVEMENTS" in line %}
-                    {% if bullet_open %}</ul>{% set bullet_open = false %}{% endif %}
-                    <h6 class="text-primary mt-3">🚀 Recommendations</h6>
-
-                    {% elif line.startswith('-') %}
-                    {% if not bullet_open %}
-                    <ul class="mt-2">
-                        {% set bullet_open = true %}
-                        {% endif %}
-                        <li>{{ line[1:] }}</li>
-
-                        {% else %}
-                        {% if bullet_open %}
-                    </ul>{% set bullet_open = false %}{% endif %}
-                    <p>{{ line }}</p>
-                    {% endif %}
-                    {% endfor %}
-
-                    {% if bullet_open %}</ul>{% endif %}
                 </div>
             </div>
 
