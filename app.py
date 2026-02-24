@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, session, redirect, url_for, flash
+from authlib.integrations.flask_client import OAuth
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_bcrypt import Bcrypt
 import PyPDF2
@@ -7,11 +8,32 @@ import os
 import re
 from skills import skills_list
 from jobs_data import jobs
+from dotenv import load_dotenv
+load_dotenv()
 
 # ================= APP SETUP =================
 
 app = Flask(__name__)
-app.secret_key = "supersecretkey"  # Change this in production
+app.secret_key = os.getenv("SECRET_KEY", "supersecretkey")  # Change in production
+
+# ================= GOOGLE OAUTH =================
+
+oauth = OAuth(app)
+
+app.config['GOOGLE_CLIENT_ID'] = os.getenv("GOOGLE_CLIENT_ID")
+app.config['GOOGLE_CLIENT_SECRET'] = os.getenv("GOOGLE_CLIENT_SECRET")
+
+google = oauth.register(
+    name='google',
+    client_id=app.config['GOOGLE_CLIENT_ID'],
+    client_secret=app.config['GOOGLE_CLIENT_SECRET'],
+    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+    client_kwargs={
+        'scope': 'openid email profile'
+    }
+)
+
+# ================= LOGIN SETUP =================
 
 bcrypt = Bcrypt(app)
 
@@ -22,12 +44,12 @@ login_manager.login_view = "login"
 # Gemini Client
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-# ================= FAKE DATABASE (Temporary) =================
+# ================= FAKE DATABASE =================
 
 users = {}
 
 class User(UserMixin):
-    def __init__(self, id, username, password):
+    def __init__(self, id, username, password=None):
         self.id = id
         self.username = username
         self.password = password
@@ -81,6 +103,42 @@ def logout():
     logout_user()
     return redirect(url_for("login"))
 
+# ================= GOOGLE LOGIN =================
+
+@app.route("/google-login")
+def google_login():
+    redirect_uri = url_for('auth_callback', _external=True)
+    return google.authorize_redirect(redirect_uri)
+
+
+@app.route("/auth/callback")
+def auth_callback():
+    token = google.authorize_access_token()
+
+    # THIS IS THE FIX 🔥
+    user_info = token.get("userinfo")
+
+    if not user_info:
+        user_info = google.get("userinfo").json()
+
+    email = user_info["email"]
+
+    # Check if user exists
+    existing_user = None
+    for user in users.values():
+        if user.username == email:
+            existing_user = user
+
+    # Auto-create if not exists
+    if not existing_user:
+        user = User(id=str(len(users)+1), username=email)
+        users[user.id] = user
+        existing_user = user
+
+    login_user(existing_user)
+
+    return redirect(url_for("home"))
+
 # ================= MAIN ROUTES =================
 
 @app.route("/")
@@ -100,12 +158,11 @@ def upload():
     if file.filename == '':
         return "No selected file", 400
 
-    # ===== Extract Text from PDF =====
+    # ===== Extract Text =====
     try:
         pdf_reader = PyPDF2.PdfReader(file)
         text = "".join([page.extract_text() or "" for page in pdf_reader.pages])
-    except Exception as e:
-        print(f"PDF Error: {e}")
+    except Exception:
         return "Error processing PDF file", 500
 
     text_lower = text.lower()
@@ -115,23 +172,14 @@ def upload():
     prompt = f"""
     Analyze the following resume.
 
-    IMPORTANT:
-    Respond ONLY in this exact format.
-    Do not add extra explanations.
-
     STRENGTHS:
-    - Short bullet point
     - Short bullet point
 
     WEAKNESSES:
     - Short bullet point
-    - Short bullet point
 
     IMPROVEMENTS:
     - Short bullet point
-    - Short bullet point
-
-    Keep points clear, concise, and professional.
 
     Resume:
     {truncated_text}
@@ -144,8 +192,7 @@ def upload():
             config={"temperature": 0.4}
         )
         ai_feedback = response.text
-    except Exception as e:
-        print("Gemini Error:", e)
+    except Exception:
         ai_feedback = "AI feedback currently unavailable."
 
     # ===== Skill Extraction =====
@@ -157,7 +204,6 @@ def upload():
 
     # ===== Job Matching =====
     job_results = []
-
     for job, required_skills in jobs.items():
         matched_skills = set(found_skills).intersection(set(required_skills))
         match_percentage = (len(matched_skills) / len(required_skills)) * 100 if required_skills else 0
