@@ -1,27 +1,62 @@
 skills_list = [
+    # Programming Languages
     "python",
     "java",
     "c++",
+    "javascript",
     "sql",
-    "mysql",
+
+    # Backend & Frameworks
     "flask",
     "django",
+    "node.js",
+    "rest api",
+    "jinja2",
+
+    # Frontend
+    "html",
+    "css",
+    "bootstrap",
+    "react",
+
+    # Databases
+    "mysql",
+    "sqlite",
+    "postgresql",
+
+    # Data Science & AI
     "machine learning",
+    "natural language processing",
+    "nlp",
+    "text preprocessing",
     "data analysis",
     "pandas",
     "numpy",
-    "html",
-    "css",
-    "javascript",
-    "bootstrap",
-    "react",
-    "node.js",
+    "scikit-learn",
+    "tf-idf",
+    "cosine similarity",
+
+    # Cloud & Deployment
     "aws",
+    "render",
+    "heroku",
+    "vercel",
+
+    # Tools
     "git",
     "github",
-    "oop",
+    "docker",
+
+    # Core CS
     "data structures",
     "algorithms",
+    "oop",
+    "dbms",
+    "operating systems",
+
+    # Soft Skills
+    "problem solving",
     "communication",
-    "problem solving"
+    "teamwork",
+    "analytical thinking"
 ]
