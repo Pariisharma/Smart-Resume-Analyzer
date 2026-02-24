@@ -109,7 +109,6 @@ def upload():
 
     return render_template(
         "result.html",
-        resume_text=text,
         skills=found_skills,
         jobs=job_results,
         overall_score=overall_score,
