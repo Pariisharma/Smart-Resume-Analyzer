@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Register | Smart Resume</title>
@@ -58,7 +59,7 @@
             border-radius: 20px;
             background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
         }
 
@@ -67,13 +68,13 @@
             margin-bottom: 30px;
         }
 
-        input {
+        .glass-card input {
             width: 100%;
             padding: 12px;
-            margin-bottom: 15px;
             border-radius: 8px;
             border: none;
             outline: none;
+            margin-bottom: 15px;
         }
 
         .btn {
@@ -114,8 +115,28 @@
             }
         }
 
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper input {
+            width: 100%;
+            padding-right: 40px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 18px;
+            color: #1e293b;
+            /* dark icon inside light input */
+        }
     </style>
 </head>
+
 <body>
 
     <!-- LEFT -->
@@ -132,13 +153,38 @@
         <div class="glass-card">
             <h2>Register 🚀</h2>
 
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            {% if category.startswith('register') or category == 'success' %}
+            <div
+                style="color: {% if category == 'success' %}#22c55e{% else %}#ff6b6b{% endif %}; margin-bottom:15px; text-align:center;">
+                {{ message }}
+            </div>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
             <form method="POST">
+
                 <input type="text" name="username" placeholder="Username" required>
-                <input type="password" name="password" placeholder="Password" required>
+
+                <div class="password-wrapper">
+                    <input type="password" name="password" id="password" placeholder="Password" required>
+                    <span class="toggle-password" onclick="togglePassword()">👁</span>
+                </div>
+
+                <div class="password-wrapper">
+                    <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password"
+                        required>
+                    <span class="toggle-password" onclick="toggleConfirmPassword()">👁</span>
+                </div>
 
                 <button type="submit" class="btn register-btn">
                     Create Account
                 </button>
+
             </form>
 
             <div class="bottom-text">
@@ -148,5 +194,18 @@
         </div>
     </div>
 
+    <script>
+        function togglePassword() {
+            const password = document.getElementById("password");
+            password.type = password.type === "password" ? "text" : "password";
+        }
+
+        function toggleConfirmPassword() {
+            const confirmPassword = document.getElementById("confirm_password");
+            confirmPassword.type = confirmPassword.type === "password" ? "text" : "password";
+        }
+    </script>
+
 </body>
+
 </html>

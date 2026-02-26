@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Login | Smart Resume</title>
@@ -58,7 +59,7 @@
             border-radius: 20px;
             background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
         }
 
@@ -119,8 +120,32 @@
             }
         }
 
+        .password-wrapper {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .password-wrapper input {
+            width: 100%;
+            padding: 12px;
+            padding-right: 40px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 18px;
+            color: #1e293b;
+        }
     </style>
 </head>
+
 <body>
 
     <!-- LEFT -->
@@ -137,9 +162,24 @@
         <div class="glass-card">
             <h2>Welcome Back 👋</h2>
 
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            {% if category.startswith('login') %}
+            <div style="color:#ff6b6b; margin-bottom:15px; text-align:center;">
+                {{ message }}
+            </div>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
             <form method="POST">
                 <input type="text" name="username" placeholder="Username" required>
-                <input type="password" name="password" placeholder="Password" required>
+                <div class="password-wrapper">
+                    <input type="password" name="password" id="login_password" placeholder="Password" required>
+                    <span class="toggle-password" onclick="toggleLoginPassword()">👁</span>
+                </div>
 
                 <button type="submit" class="btn login-btn">
                     Login
@@ -159,5 +199,13 @@
         </div>
     </div>
 
+    <script>
+        function toggleLoginPassword() {
+            const password = document.getElementById("login_password");
+            password.type = password.type === "password" ? "text" : "password";
+        }
+    </script>
+
 </body>
+
 </html>

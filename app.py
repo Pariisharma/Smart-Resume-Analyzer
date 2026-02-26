@@ -40,6 +40,7 @@ bcrypt = Bcrypt(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
+login_manager.login_message = None
 
 # Gemini Client
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
@@ -66,9 +67,14 @@ def register():
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
+        confirm_password = request.form.get("confirm_password")
+
+        if password != confirm_password:
+            flash("Passwords do not match!", "register_error")
+            return redirect(url_for("register"))
 
         if username in [u.username for u in users.values()]:
-            flash("Username already exists!")
+            flash("Username already exists!", "register_error")
             return redirect(url_for("register"))
 
         hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
@@ -76,7 +82,7 @@ def register():
         user = User(id=str(len(users)+1), username=username, password=hashed_password)
         users[user.id] = user
 
-        flash("Account created successfully! Please login.")
+        flash("Account created successfully! Please login.", "success")
         return redirect(url_for("login"))
 
     return render_template("register.html")
@@ -93,7 +99,8 @@ def login():
                 login_user(user)
                 return redirect(url_for("home"))
 
-        flash("Invalid username or password.")
+        flash("Invalid username or password.", "login_error")
+        return render_template("login.html")   # ✅ stay on login page
 
     return render_template("login.html")
 
