@@ -215,12 +215,42 @@
         .dark-mode .feedback-card {
             background: rgba(30, 41, 59, 0.7);
         }
+
+        /* ===== Modern Top Right Toggle ===== */
+
+        .theme-toggle {
+            position: fixed;
+            top: 25px;
+            right: 30px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .dark-mode .theme-toggle {
+            background: rgba(30, 41, 59, 0.8);
+        }
     </style>
 </head>
 
 <!-- DARK MODE ENABLED BY DEFAULT -->
 
 <body class="dark-mode">
+
+    <button id="darkToggle" class="theme-toggle">🌙</button>
 
     <div class="container py-5">
         <div class="card glass-card p-5">
@@ -237,9 +267,7 @@
 
                 <hr class="divider-line">
 
-                <button id="darkToggle" class="btn btn-outline-dark premium-btn mt-2">
-                    ☀️ Switch to Light Mode
-                </button>
+
             </div>
 
 
@@ -454,9 +482,9 @@
             document.body.classList.toggle("dark-mode");
 
             if (document.body.classList.contains("dark-mode")) {
-                toggleBtn.innerHTML = "☀️ Switch to Light Mode";
+                toggleBtn.textContent = "🌙";
             } else {
-                toggleBtn.innerHTML = "🌙 Switch to Dark Mode";
+                toggleBtn.textContent = "☀️";
             }
         });
 
