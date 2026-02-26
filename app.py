@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, session, redirect, url_for, f
 from authlib.integrations.flask_client import OAuth
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_bcrypt import Bcrypt
+from flask_sqlalchemy import SQLAlchemy
 import PyPDF2
 from google import genai
 import os
@@ -14,6 +15,11 @@ load_dotenv()
 # ================= APP SETUP =================
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
 app.secret_key = os.getenv("SECRET_KEY", "supersecretkey")  # Change in production
 
 # ================= GOOGLE OAUTH =================
@@ -47,18 +53,15 @@ client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 # ================= FAKE DATABASE =================
 
-users = {}
-
-class User(UserMixin):
-    def __init__(self, id, username, name=None, password=None):
-        self.id = id
-        self.username = username
-        self.name = name
-        self.password = password
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(150), unique=True, nullable=False)
+    name = db.Column(db.String(150))
+    password = db.Column(db.String(200))
 
 @login_manager.user_loader
 def load_user(user_id):
-    return users.get(user_id)
+    return User.query.get(int(user_id))
 
 # ================= AUTH ROUTES =================
 
@@ -73,20 +76,21 @@ def register():
             flash("Passwords do not match!", "register_error")
             return redirect(url_for("register"))
 
-        if username in [u.username for u in users.values()]:
+        existing_user = User.query.filter_by(username=username).first()
+        if existing_user:
             flash("Username already exists!", "register_error")
             return redirect(url_for("register"))
 
         hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
 
-        user = User(id=str(len(users)+1), username=username, password=hashed_password)
-        users[user.id] = user
+        new_user = User(username=username, name=username, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
 
         flash("Account created successfully! Please login.", "success")
         return redirect(url_for("login"))
 
     return render_template("register.html")
-
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -94,16 +98,16 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
 
-        for user in users.values():
-            if user.username == username and bcrypt.check_password_hash(user.password, password):
-                login_user(user)
-                return redirect(url_for("home"))
+        user = User.query.filter_by(username=username).first()
+
+        if user and bcrypt.check_password_hash(user.password, password):
+            login_user(user)
+            return redirect(url_for("home"))
 
         flash("Invalid username or password.", "login_error")
-        return render_template("login.html")   # ✅ stay on login page
+        return render_template("login.html")
 
     return render_template("login.html")
-
 
 @app.route("/logout")
 @login_required
@@ -131,35 +135,31 @@ def auth_callback():
     email = user_info["email"]
     full_name = user_info.get("name", "")
 
-    # Extract first name
     first_name = full_name.split(" ")[0] if full_name else "User"
 
-    existing_user = None
-    for user in users.values():
-        if user.username == email:
-            existing_user = user
+    existing_user = User.query.filter_by(username=email).first()
 
     if not existing_user:
-        user = User(
-            id=str(len(users)+1),
-            username=email,
-            name=first_name
-        )
-        users[user.id] = user
-        existing_user = user
+        new_user = User(username=email, name=first_name)
+        db.session.add(new_user)
+        db.session.commit()
+        existing_user = new_user
 
     login_user(existing_user)
-
     return redirect(url_for("home"))
+
    
 
 # ================= MAIN ROUTES =================
 
 @app.route("/")
+def root():
+    return redirect(url_for("login"))
+
+@app.route("/home")
 @login_required
 def home():
     return render_template("index.html", username=current_user.name)
-
 
 @app.route("/upload", methods=["POST"])
 @login_required
@@ -241,6 +241,9 @@ def upload():
         recommended_job=recommended_job,
         ai_feedback=ai_feedback
     )
+
+with app.app_context():
+    db.create_all()
 
 # ================= RUN =================
 
