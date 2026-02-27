@@ -147,13 +147,21 @@
 
         /* Fix file input text color */
         .file-input {
-            color: #111 !important;
-            background-color: #f8fafc;
+            cursor: pointer;
+            font-size: 14px;
         }
 
         .dark-mode .file-input {
             color: #111 !important;
             background-color: #e5e7eb;
+        }
+
+        .upload-hint {
+            display: block;
+            margin-bottom: 12px;
+            font-size: 13px;
+            opacity: 0.7;
+            letter-spacing: 0.5px;
         }
     </style>
 </head>
@@ -167,8 +175,13 @@
         </p>
 
         <form action="/upload" method="POST" enctype="multipart/form-data">
-            <label>Upload Your Resume (PDF)</label>
-            <input type="file" name="resume" class="form-control file-input" required>
+            <label style="margin-bottom:6px;">
+                Upload Your Resume
+            </label>
+            <small class="upload-hint">
+                📄 PDF &nbsp; | &nbsp; 📝 DOCX
+            </small>
+            <input type="file" name="resume" class="form-control file-input" accept=".pdf,.docx" required>
             <button type="submit" id="analyzeBtn">
                 <span id="btnText">Analyze Resume</span>
             </button>

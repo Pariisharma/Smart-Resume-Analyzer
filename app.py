@@ -4,6 +4,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 import PyPDF2
+from docx import Document
 from google import genai
 import os
 import re
@@ -173,11 +174,23 @@ def upload():
         return "No selected file", 400
 
     # ===== Extract Text =====
+    # ===== Extract Text =====
     try:
-        pdf_reader = PyPDF2.PdfReader(file)
-        text = "".join([page.extract_text() or "" for page in pdf_reader.pages])
+        filename = file.filename.lower()
+
+        if filename.endswith(".pdf"):
+            pdf_reader = PyPDF2.PdfReader(file)
+            text = "".join([page.extract_text() or "" for page in pdf_reader.pages])
+
+        elif filename.endswith(".docx"):
+            doc = Document(file)
+            text = "\n".join([para.text for para in doc.paragraphs])
+
+        else:
+            return "Unsupported file format. Please upload PDF or DOCX.", 400
+
     except Exception:
-        return "Error processing PDF file", 500
+        return "Error processing file", 500
 
     text_lower = text.lower()
     truncated_text = text[:3000]
