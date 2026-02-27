@@ -4,6 +4,10 @@ An AI-powered Resume Analysis Web Application built using Flask that simulates a
 
 ---
 
+## 🌐 Live Demo
+
+https://smart-resume-analyzer-lt6s.onrender.com
+
 ## 🚀 Features
 
 - 🔐 User Authentication (Manual + Google OAuth)
