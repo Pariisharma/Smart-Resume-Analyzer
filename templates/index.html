@@ -145,15 +145,30 @@
             }
         }
 
-        /* Fix file input text color */
         .file-input {
-            cursor: pointer;
-            font-size: 14px;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 20px;
+            background: #f8fafc;
+            color: #1f2937 !important;
+            font-weight: 500;
         }
 
-        .dark-mode .file-input {
-            color: #111 !important;
-            background-color: #e5e7eb;
+        /* Fix file placeholder text */
+        .file-input::file-selector-button {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: none;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .file-input::file-selector-button:hover {
+            background: #1e40af;
         }
 
         .upload-hint {
@@ -181,11 +196,12 @@
             <small class="upload-hint">
                 📄 PDF &nbsp; | &nbsp; 📝 DOCX
             </small>
-            <input type="file" name="resume" class="form-control file-input" accept=".pdf,.docx" required>
+            <input type="file" name="resume" class="file-input" accept=".pdf,.docx" required>
             <button type="submit" id="analyzeBtn">
                 <span id="btnText">Analyze Resume</span>
             </button>
         </form>
+
 
         <form action="/logout">
             <button class="logout-btn">Logout</button>
