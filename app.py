@@ -13,6 +13,17 @@ from jobs_data import jobs
 from dotenv import load_dotenv
 load_dotenv()
 
+# ================= ATS CONFIG =================
+
+required_sections = [
+    "education",
+    "experience",
+    "skills",
+    "projects",
+    "certifications",
+    "summary"
+]
+
 # ================= APP SETUP =================
 
 app = Flask(__name__)
@@ -174,7 +185,6 @@ def upload():
         return "No selected file", 400
 
     # ===== Extract Text =====
-    # ===== Extract Text =====
     try:
         filename = file.filename.lower()
 
@@ -193,6 +203,17 @@ def upload():
         return "Error processing file", 500
 
     text_lower = text.lower()
+    # ===== ATS SECTION DETECTION =====
+
+    found_sections = []
+    missing_sections = []
+
+    for section in required_sections:
+        if re.search(r'\b' + re.escape(section) + r'\b', text_lower):
+            found_sections.append(section)
+        else:
+            missing_sections.append(section)
+
     truncated_text = text[:3000]
 
     # ===== AI Analysis =====
@@ -222,12 +243,23 @@ def upload():
     except Exception:
         ai_feedback = "AI feedback currently unavailable."
 
-    # ===== Skill Extraction =====
+    # ===== SKILL EXTRACTION =====
     found_skills = []
+
     for skill in skills_list:
         pattern = r'\b' + re.escape(skill.lower()) + r'\b'
         if re.search(pattern, text_lower):
             found_skills.append(skill)
+
+    # ===== ATS KEYWORD DENSITY =====
+    total_words = len(text_lower.split())
+    keyword_density = (len(found_skills) / total_words) * 100
+
+    # ===== ATS SCORE CALCULATION =====
+    section_score = (len(found_sections) / len(required_sections)) * 100
+    density_score = keyword_density
+
+    ats_score = round((section_score * 0.5) + (density_score * 0.5), 2)
 
     # ===== Job Matching =====
     job_results = []
@@ -252,7 +284,11 @@ def upload():
         jobs=job_results,
         overall_score=overall_score,
         recommended_job=recommended_job,
-        ai_feedback=ai_feedback
+        ai_feedback=ai_feedback,
+        ats_score=ats_score,
+        found_sections=found_sections,
+        missing_sections=missing_sections,
+        keyword_density=round(keyword_density, 2)
     )
 
 with app.app_context():
